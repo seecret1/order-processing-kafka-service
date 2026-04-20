@@ -6,7 +6,7 @@ plugins {
 
 group = "com.github.seecret1"
 version = "0.0.1-SNAPSHOT"
-description = "order-service"
+description = "common-dto"
 
 java {
     toolchain {
@@ -19,24 +19,13 @@ repositories {
 }
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testCompileOnly("org.projectlombok:lombok")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testAnnotationProcessor("org.projectlombok:lombok")
-}
-
-dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.kafka:spring-kafka")
-
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.postgresql:postgresql")
-
-    implementation("org.springframework.retry:spring-retry")
-    implementation("org.springframework:spring-aspects")
-
-    implementation(project(":common-dto"))
 }
 
 tasks.withType<Test> {

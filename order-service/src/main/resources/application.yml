@@ -2,5 +2,29 @@ spring:
   application:
     name: order-service
 
+  kafka:
+    bootstrap-servers: localhost:9092
+
+  web:
+    client:
+      rest:
+        connect-timeout: 5s
+        read-timeout: 10s
+
 server:
   port: 8081
+
+app:
+  kafka:
+    topic: "orders"
+    groupId: "order-group-id"
+
+  data:
+    service:
+      url:
+        api: http://localhost:8083/api/data
+
+  retry:
+    max-attempts: 3
+    delay: 1000
+    multiplier: 2
