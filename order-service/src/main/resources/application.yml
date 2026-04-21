@@ -17,7 +17,8 @@ server:
 app:
   kafka:
     topic: "orders"
-    groupId: "order-group-id"
+    partitions: 3
+    replicas: 1
 
   data:
     service:
@@ -28,3 +29,4 @@ app:
     max-attempts: 3
     delay: 1000
     multiplier: 2
+    max-interval: 10000

@@ -12,3 +12,10 @@ app:
   kafka:
     topic: "orders"
     groupId: "order-group-id"
+    partitions: 3
+    replicas: 1
+    max-pull-records: 10
+
+  retry:
+    max-attempts: 3
+    delay: 1000

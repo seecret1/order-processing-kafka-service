@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
@@ -23,7 +24,7 @@ public class OrderKafkaService {
 
     private final OrderHttpClient orderHttpClient;
 
-    private final FailedOrderQueue failedOrderQueue;
+    private final RetryTemplate kafkaRetryTemplate;
 
     private final KafkaTemplate<String, OrderCreatedEvent> kafkaTemplate;
 
@@ -33,21 +34,18 @@ public class OrderKafkaService {
             OrderCreatedEvent order = orderHttpClient.saveOrderService(request);
 
             log.info("Sending order to Kafka");
-            kafkaTemplate.send(
-                    topicName,
-                    order.orderId().toString(),
-                    order
-            ).whenComplete((result, ex) -> {
-                if (ex != null) {
-                    log.error("Kafka failed, enqueue retry for order: {}", order.orderId());
-                    failedOrderQueue.add(order);
-                } else {
-                    log.info("Order sent to Kafka: {}", order.orderId());
-                }
+            kafkaRetryTemplate.execute(context -> {
+                kafkaTemplate.send(
+                        topicName,
+                        order.orderId().toString(),
+                        order
+                ).get();
+
+                log.info("Order sent to kafka successfully: {}", order.orderId());
+                return null;
             });
 
-            log.debug("Send order: {}, in Kafka", order);
-            log.debug("Order saved in db: {}", order);
+            log.debug("Order {} saved in db and sent in kafka", order);
             return order;
 
         } catch (RestClientException ex) {
