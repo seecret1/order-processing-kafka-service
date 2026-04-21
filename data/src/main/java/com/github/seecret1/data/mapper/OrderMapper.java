@@ -1,5 +1,6 @@
 package com.github.seecret1.data.mapper;
 
+import com.github.seecret1.commondto.model.CreateOrderRequest;
 import com.github.seecret1.commondto.model.OrderCreatedEvent;
 import com.github.seecret1.data.entity.Order;
 import com.github.seecret1.data.entity.User;
@@ -19,6 +20,18 @@ public class OrderMapper {
                 .quantity(dto.quantity())
                 .price(dto.price())
                 .timestamp(dto.timestamp())
+                .build();
+    }
+
+    public Order toEntity(
+            CreateOrderRequest dto,
+            User user
+    ) {
+        return Order.builder()
+                .user(user)
+                .productCode(dto.productCode())
+                .quantity(dto.quantity())
+                .price(dto.price())
                 .build();
     }
 

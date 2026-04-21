@@ -1,5 +1,6 @@
 package com.github.seecret1.data.controller;
 
+import com.github.seecret1.commondto.model.CreateOrderRequest;
 import com.github.seecret1.commondto.model.OrderCreatedEvent;
 import com.github.seecret1.data.service.OrderDataService;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,8 @@ public class OrderDataController {
 
     @PostMapping
     public ResponseEntity<OrderCreatedEvent> saveOrder(
-            @RequestBody OrderCreatedEvent orderCreatedEvent
+            @RequestBody CreateOrderRequest request
     ) {
-        return ResponseEntity.ok(orderDataService.saveOrder(orderCreatedEvent));
+        return ResponseEntity.ok(orderDataService.saveOrder(request));
     }
 }

@@ -3,6 +3,7 @@ package com.github.seecret1.data.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -36,5 +37,6 @@ public class Order {
     BigDecimal price;
 
     @Column(name = "timestamp")
+    @CreationTimestamp
     Instant timestamp;
 }

@@ -2,5 +2,13 @@ spring:
   application:
     name: notification-service
 
+  kafka:
+    bootstrap-servers: localhost:9092
+
 server:
   port: 8082
+
+app:
+  kafka:
+    topic: "orders"
+    groupId: "order-group-id"

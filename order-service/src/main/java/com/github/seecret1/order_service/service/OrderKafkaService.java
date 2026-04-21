@@ -13,7 +13,7 @@ import org.springframework.web.client.RestClientException;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OrderKafkaProducer {
+public class OrderKafkaService {
 
     @Value("${app.kafka.topic}")
     private String topicName;

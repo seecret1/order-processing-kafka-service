@@ -18,7 +18,7 @@ public class KafkaRetryScheduler {
 
     private static final Long FIXED_DELAY = 5000L;
 
-    private static final int batchSize = 10;
+    private static final int BATCH_SIZE = 10;
 
     private static int processed = 0;
 
@@ -30,7 +30,7 @@ public class KafkaRetryScheduler {
     public void retry() {
         OrderCreatedEvent order;
 
-        while ((order = queue.poll()) != null && processed < batchSize) {
+        while ((order = queue.poll()) != null && processed < BATCH_SIZE) {
             processed++;
             try {
                 kafkaTemplate.send(
