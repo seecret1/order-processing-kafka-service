@@ -1,7 +1,7 @@
 package com.github.seecret1.notification_service.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.seecret1.commondto.model.OrderCreatedEvent;
+import com.github.seecret1.commondto.model.order.OrderCreatedEvent;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;

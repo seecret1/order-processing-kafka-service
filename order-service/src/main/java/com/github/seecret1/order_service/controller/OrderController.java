@@ -1,7 +1,7 @@
 package com.github.seecret1.order_service.controller;
 
-import com.github.seecret1.commondto.model.CreateOrderRequest;
-import com.github.seecret1.commondto.model.OrderCreatedEvent;
+import com.github.seecret1.commondto.model.order.CreateOrderRequest;
+import com.github.seecret1.commondto.model.order.OrderCreatedEvent;
 import jakarta.validation.Valid;
 import com.github.seecret1.order_service.service.OrderKafkaService;
 import lombok.RequiredArgsConstructor;

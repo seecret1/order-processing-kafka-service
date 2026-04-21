@@ -1,7 +1,7 @@
 package com.github.seecret1.data.controller;
 
-import com.github.seecret1.commondto.model.CreateOrderRequest;
-import com.github.seecret1.commondto.model.OrderCreatedEvent;
+import com.github.seecret1.commondto.model.order.CreateOrderRequest;
+import com.github.seecret1.commondto.model.order.OrderCreatedEvent;
 import com.github.seecret1.data.service.OrderDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

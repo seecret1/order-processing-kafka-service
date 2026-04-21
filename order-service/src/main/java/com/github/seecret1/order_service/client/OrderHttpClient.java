@@ -1,7 +1,7 @@
 package com.github.seecret1.order_service.client;
 
-import com.github.seecret1.commondto.model.CreateOrderRequest;
-import com.github.seecret1.commondto.model.OrderCreatedEvent;
+import com.github.seecret1.commondto.model.order.CreateOrderRequest;
+import com.github.seecret1.commondto.model.order.OrderCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

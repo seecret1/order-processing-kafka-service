@@ -1,6 +1,6 @@
 package com.github.seecret1.notification_service.listener;
 
-import com.github.seecret1.commondto.model.OrderCreatedEvent;
+import com.github.seecret1.commondto.model.order.OrderCreatedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;

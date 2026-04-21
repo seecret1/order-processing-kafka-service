@@ -1,7 +1,7 @@
 package com.github.seecret1.data.service;
 
-import com.github.seecret1.commondto.model.CreateOrderRequest;
-import com.github.seecret1.commondto.model.OrderCreatedEvent;
+import com.github.seecret1.commondto.model.order.CreateOrderRequest;
+import com.github.seecret1.commondto.model.order.OrderCreatedEvent;
 import com.github.seecret1.data.mapper.OrderMapper;
 import com.github.seecret1.data.repository.OrderRepository;
 import com.github.seecret1.data.repository.UserRepository;

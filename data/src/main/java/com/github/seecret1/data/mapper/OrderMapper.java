@@ -1,7 +1,7 @@
 package com.github.seecret1.data.mapper;
 
-import com.github.seecret1.commondto.model.CreateOrderRequest;
-import com.github.seecret1.commondto.model.OrderCreatedEvent;
+import com.github.seecret1.commondto.model.order.CreateOrderRequest;
+import com.github.seecret1.commondto.model.order.OrderCreatedEvent;
 import com.github.seecret1.data.entity.Order;
 import com.github.seecret1.data.entity.User;
 import org.springframework.stereotype.Component;
