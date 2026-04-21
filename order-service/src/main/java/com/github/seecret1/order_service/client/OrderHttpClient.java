@@ -1,8 +1,10 @@
 package com.github.seecret1.order_service.client;
 
+import com.github.seecret1.commondto.model.CreateOrderRequest;
 import com.github.seecret1.commondto.model.OrderCreatedEvent;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,10 +16,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OrderHttpClient {
+
+    private static final Logger log = LoggerFactory.getLogger(OrderHttpClient.class);
 
     private final RestTemplate restTemplate;
 
@@ -32,23 +35,26 @@ public class OrderHttpClient {
                     multiplierExpression = "${app.retry.multiplier:2}"
             )
     )
-    public void saveOrderService(OrderCreatedEvent order) {
-        log.info("Try save order: {}", order.orderId());
+        public OrderCreatedEvent saveOrderService(CreateOrderRequest request) {
+        log.info("Try save order: {}", request);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<OrderCreatedEvent> request = new HttpEntity<>(order, headers);
+        HttpEntity<CreateOrderRequest> req = new HttpEntity<>(request, headers);
 
-        restTemplate.postForObject(dataServiceUrlApi, request, OrderCreatedEvent.class);
+        OrderCreatedEvent response = restTemplate.postForObject(dataServiceUrlApi, req, OrderCreatedEvent.class);
+        if (response == null) {
+            throw new RestClientException("Empty response from data-service");
+        }
 
-        log.info("HTTP request completed for order: {}", order.orderId());
-        log.debug("Successfully save order: {}", order);
+        log.debug("Successfully save order: {}", request);
+        return response;
     }
 
     @Recover
-    public void retrySaveOrder(RestClientException ex, OrderCreatedEvent order) {
+    public OrderCreatedEvent retrySaveOrder(RestClientException ex, CreateOrderRequest request) {
         log.error("Error push order request: {}. Exception: {}",
-                order.orderId(), ex.getMessage());
-        throw new RestClientException("Error push order request: " + order.orderId());
+                request, ex.getMessage());
+        throw new RestClientException("Error push order request", ex);
     }
 }

@@ -1,6 +1,8 @@
 package com.github.seecret1.order_service.controller;
 
+import com.github.seecret1.commondto.model.CreateOrderRequest;
 import com.github.seecret1.commondto.model.OrderCreatedEvent;
+import jakarta.validation.Valid;
 import com.github.seecret1.order_service.service.OrderKafkaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +19,9 @@ public class OrderController {
     private final OrderKafkaService orderKafkaService;
 
     @PostMapping
-    public ResponseEntity<Void> sendOrder(
-            @RequestBody OrderCreatedEvent orderCreatedEvent
+    public ResponseEntity<OrderCreatedEvent> sendOrder(
+            @Valid @RequestBody CreateOrderRequest request
     ) {
-        orderKafkaService.saveOrder(orderCreatedEvent);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(orderKafkaService.saveOrder(request));
     }
 }

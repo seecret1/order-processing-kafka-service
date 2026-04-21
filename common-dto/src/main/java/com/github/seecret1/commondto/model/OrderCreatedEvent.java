@@ -26,4 +26,20 @@ public record OrderCreatedEvent(
         BigDecimal price,
 
         Instant timestamp
-) { }
+) {
+        public OrderCreatedEvent(
+                String userId,
+                String productCode,
+                int quantity,
+                BigDecimal price
+        ) {
+                this(
+                        UUID.randomUUID(),
+                        userId,
+                        productCode,
+                        quantity,
+                        price,
+                        Instant.now()
+                );
+        }
+}

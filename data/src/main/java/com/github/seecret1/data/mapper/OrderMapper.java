@@ -10,20 +10,6 @@ import org.springframework.stereotype.Component;
 public class OrderMapper {
 
     public Order toEntity(
-            OrderCreatedEvent dto,
-            User user
-    ) {
-        return Order.builder()
-                .id(dto.orderId())
-                .user(user)
-                .productCode(dto.productCode())
-                .quantity(dto.quantity())
-                .price(dto.price())
-                .timestamp(dto.timestamp())
-                .build();
-    }
-
-    public Order toEntity(
             CreateOrderRequest dto,
             User user
     ) {
