@@ -31,3 +31,9 @@ app:
     delay: 1000
     multiplier: 2
     max-interval: 10000
+
+logging:
+  level:
+    com.github.seecret1.data: DEBUG
+    com.github.seecret1.order_service: DEBUG
+    com.github.seecret1.notification_service: DEBUG

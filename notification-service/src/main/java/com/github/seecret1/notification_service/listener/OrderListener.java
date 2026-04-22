@@ -32,7 +32,10 @@ public class OrderListener {
         log.info("Key: {}; Partition: {}; Topic: {}; Timestamp: {}",
                 key, partition, topic, timestamp);
 
+        log.debug("Order: {}", order);
+
         if (order.quantity() > 100) {
+            log.error("Order quantity exceeded");
             throw new RuntimeException("Order quantity limited");
         }
         log.info("Processing order successfully: {}", order.orderId());
@@ -47,5 +50,7 @@ public class OrderListener {
     ) {
         log.error("Message moved to DLT - Order: {}; Original Topic: {}; Offset: {}; Exception: {}",
                 order, topic, offset, exception);
+
+        log.debug("Handle order: {}", order);
     }
 }
