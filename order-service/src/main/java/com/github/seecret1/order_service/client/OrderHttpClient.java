@@ -29,13 +29,13 @@ public class OrderHttpClient {
 
     @Retryable(
             value = {RestClientException.class},
-            maxAttemptsExpression = "${app.retry.max-attempts:3}",
+            maxAttemptsExpression = "${app.retry.max-attempts}",
             backoff = @Backoff(
-                    delayExpression = "${app.retry.delay:1000}",
-                    multiplierExpression = "${app.retry.multiplier:2}"
+                    delayExpression = "${app.retry.delay}",
+                    multiplierExpression = "${app.retry.multiplier}"
             )
     )
-        public OrderCreatedEvent saveOrderService(CreateOrderRequest request) {
+    public OrderCreatedEvent saveOrderService(CreateOrderRequest request) {
         log.info("Try save order: {}", request);
 
         HttpHeaders headers = new HttpHeaders();

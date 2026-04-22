@@ -3,7 +3,7 @@ spring:
     name: order-service
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${HOST:localhost}:9092
 
   web:
     client:
@@ -16,14 +16,15 @@ server:
 
 app:
   kafka:
-    topic: "orders"
+    topic: orders
+    dlt-topic: orders.DLT
     partitions: 3
     replicas: 1
 
   data:
     service:
       url:
-        api: http://localhost:8083/api/data
+        api: http://${HOST:localhost}:8083/api/data
 
   retry:
     max-attempts: 3

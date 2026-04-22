@@ -31,7 +31,7 @@ public class ProducerKafkaConfig {
     @Value("${app.kafka.topic}")
     private String topicName;
 
-    @Value("${app.kafka.dlt-topic:orders.DLT}")
+    @Value("${app.kafka.dlt-topic}")
     private String dltTopicName;
 
     @Value("${app.kafka.partitions}")
