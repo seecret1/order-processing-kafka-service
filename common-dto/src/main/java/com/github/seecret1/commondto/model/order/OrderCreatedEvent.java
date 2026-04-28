@@ -28,18 +28,18 @@ public record OrderCreatedEvent(
         Instant timestamp
 ) {
         public OrderCreatedEvent(
+                UUID orderId,
                 String userId,
                 String productCode,
                 int quantity,
-                BigDecimal price
+                BigDecimal price,
+                Instant timestamp
         ) {
-                this(
-                        UUID.randomUUID(),
-                        userId,
-                        productCode,
-                        quantity,
-                        price,
-                        Instant.now()
-                );
+                this.orderId = orderId;
+                this.userId = userId;
+                this.productCode = productCode;
+                this.quantity = quantity;
+                this.price = price;
+                this.timestamp = timestamp;
         }
 }

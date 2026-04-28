@@ -37,6 +37,10 @@ public class Order {
     BigDecimal price;
 
     @Column(name = "timestamp")
-    @CreationTimestamp
     Instant timestamp;
+
+    @PrePersist
+    public void prePersist() {
+        timestamp = Instant.now();
+    }
 }
