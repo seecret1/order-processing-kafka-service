@@ -26,20 +26,4 @@ public record OrderCreatedEvent(
         BigDecimal price,
 
         Instant timestamp
-) {
-        public OrderCreatedEvent(
-                UUID orderId,
-                String userId,
-                String productCode,
-                int quantity,
-                BigDecimal price,
-                Instant timestamp
-        ) {
-                this.orderId = orderId;
-                this.userId = userId;
-                this.productCode = productCode;
-                this.quantity = quantity;
-                this.price = price;
-                this.timestamp = timestamp;
-        }
-}
+) { }

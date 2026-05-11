@@ -2,26 +2,30 @@ package com.github.seecret1.data.mapper;
 
 import com.github.seecret1.commondto.model.user.UserDto;
 import com.github.seecret1.data.entity.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(
-        componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE
-)
-public interface UserMapper {
+@Component
+public class UserMapper {
 
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name")
-    User toEntity(UserDto dto);
+    public User toEntity(UserDto dto) {
+        return User.builder()
+                .name(dto.name())
+                .id(dto.id())
+                .build();
+    }
 
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name")
-    UserDto toDto(User user);
+    public UserDto toDto(User user) {
+        return new UserDto(user.getId(), user.getName());
+    }
 
-    List<UserDto> toDto(List<User> users);
+    public List<UserDto> toDto(List<User> users) {
+        List<UserDto> list = new ArrayList<>(users.size());
+        for (User user : users) {
+            list.add(new UserDto(user.getId(), user.getName()));
+        }
+        return list;
+    }
 }

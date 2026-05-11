@@ -3,7 +3,7 @@ spring:
     name: order-service
 
   kafka:
-    bootstrap-servers: ${HOST:localhost}:9092
+    bootstrap-servers: ${HOST:localhost}:${KAFKA1_PORT:9092}, ${HOST:localhost}:${KAFKA2_PORT:9093}, ${HOST:localhost}:${KAFKA3_PORT:9094}
 
   web:
     client:
@@ -19,7 +19,7 @@ app:
     topic: orders
     dlt-topic: orders.DLT
     partitions: 3
-    replicas: 1
+    replicas: 3
 
   data:
     service:
