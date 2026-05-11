@@ -16,6 +16,7 @@ import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.util.backoff.FixedBackOff;
@@ -66,19 +67,23 @@ public class ConsumerKafkaConfig {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
 
-        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, OrderCreatedEvent.class.getName());
-        config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
         config.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, maxPullRecords);
+
+        JsonDeserializer<OrderCreatedEvent> jsonDeserializer =
+                new JsonDeserializer<>(objectMapper);
+        jsonDeserializer.addTrustedPackages("com.github.seecret1.commondto.model");
+        jsonDeserializer.setUseTypeHeaders(false);
+        jsonDeserializer.setRemoveTypeHeaders(false);
+
+        ErrorHandlingDeserializer<OrderCreatedEvent> errorHandlingDeserializer =
+                new ErrorHandlingDeserializer<>(jsonDeserializer);
 
         return new DefaultKafkaConsumerFactory<>(
                 config,
                 new StringDeserializer(),
-                new JsonDeserializer<>(objectMapper)
+                errorHandlingDeserializer
         );
     }
 
@@ -106,6 +111,10 @@ public class ConsumerKafkaConfig {
                 recoverer,
                 new FixedBackOff(retryDelay, retryMaxAttempts)
         );
+        errorHandler.addNotRetryableExceptions(
+                org.apache.kafka.common.errors.SerializationException.class
+        );
+
         factory.setCommonErrorHandler(errorHandler);
         return factory;
     }
