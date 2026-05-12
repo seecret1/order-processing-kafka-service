@@ -2,6 +2,7 @@ package com.github.seecret1.notification_service.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.seecret1.commondto.model.order.OrderCreatedEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -16,7 +17,6 @@ import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
-import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.util.backoff.FixedBackOff;
@@ -24,6 +24,7 @@ import org.springframework.util.backoff.FixedBackOff;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @EnableKafka
 @Configuration
 public class ConsumerKafkaConfig {
@@ -68,30 +69,21 @@ public class ConsumerKafkaConfig {
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+
+        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, OrderCreatedEvent.class.getName());
+        config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 
         config.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, maxPullRecords);
 
-        JsonDeserializer<OrderCreatedEvent> jsonDeserializer =
-                new JsonDeserializer<>(objectMapper);
-        jsonDeserializer.addTrustedPackages("com.github.seecret1.commondto.model");
-        jsonDeserializer.setUseTypeHeaders(false);
-        jsonDeserializer.setRemoveTypeHeaders(false);
-
-        ErrorHandlingDeserializer<OrderCreatedEvent> errorHandlingDeserializer =
-                new ErrorHandlingDeserializer<>(jsonDeserializer);
-
-        return new DefaultKafkaConsumerFactory<>(
-                config,
-                new StringDeserializer(),
-                errorHandlingDeserializer
-        );
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new JsonDeserializer<>(objectMapper));
     }
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> orderKafkaListenerContainerFactory(
             ConsumerFactory<String, OrderCreatedEvent> consumerFactory,
             KafkaTemplate<String, OrderCreatedEvent> retryableTemplate
-
     ) {
         ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
@@ -111,11 +103,22 @@ public class ConsumerKafkaConfig {
                 recoverer,
                 new FixedBackOff(retryDelay, retryMaxAttempts)
         );
-        errorHandler.addNotRetryableExceptions(
-                org.apache.kafka.common.errors.SerializationException.class
-        );
+        errorHandler.setRetryListeners((record, exception, deliveryAttempt) -> {
+            log.warn("Retry attempt {} for record: {}, exception: {}",
+                    deliveryAttempt, record.key(), exception.getMessage());
+        });
 
         factory.setCommonErrorHandler(errorHandler);
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> dltKafkaListenerContainerFactory(
+            ConsumerFactory<String, OrderCreatedEvent> consumerFactory
+    ) {
+        ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory);
         return factory;
     }
 

@@ -20,6 +20,7 @@ app:
     dlt-topic: orders.DLT
     partitions: 3
     replicas: 3
+    dltReplicas: 1
 
   data:
     service:

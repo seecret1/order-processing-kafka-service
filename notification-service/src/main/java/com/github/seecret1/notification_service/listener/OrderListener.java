@@ -41,6 +41,21 @@ public class OrderListener {
         log.info("Processing order successfully: {}", order.orderId());
     }
 
+    @KafkaListener(
+            topics = "${app.kafka.topic}.DLT",
+            groupId = "${app.kafka.groupId}.dlt",
+            containerFactory = "dltKafkaListenerContainerFactory"
+    )
+    public void dltListen(
+            @Payload OrderCreatedEvent order,
+            @Header(value = KafkaHeaders.RECEIVED_TOPIC) String topic,
+            @Header(value = KafkaHeaders.OFFSET) long offset,
+            @Header(value = KafkaHeaders.DLT_EXCEPTION_MESSAGE, required = false) String exception
+    ) {
+        log.error("Message in DLT - Order: {}; Original Topic: {}; Offset: {}", order, topic, offset);
+        log.error("Original exception: {}", exception);
+    }
+
     @DltHandler
     public void dltListener(
             OrderCreatedEvent order,
@@ -50,7 +65,6 @@ public class OrderListener {
     ) {
         log.error("Message moved to DLT - Order: {}; Original Topic: {}; Offset: {}; Exception: {}",
                 order, topic, offset, exception);
-
         log.debug("Handle order: {}", order);
     }
 }

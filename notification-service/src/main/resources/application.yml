@@ -13,7 +13,7 @@ app:
     topic: "orders"
     groupId: "order-group-id"
     partitions: 3
-    replicas: 1
+    replicas: 3
     max-pull-records: 10
 
   retry:

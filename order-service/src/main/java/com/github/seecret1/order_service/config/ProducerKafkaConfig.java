@@ -40,6 +40,9 @@ public class ProducerKafkaConfig {
     @Value("${app.kafka.replicas}")
     private Integer replicas;
 
+    @Value("${app.kafka.dltReplicas}")
+    private Integer dltReplicas;
+
     @Value("${app.retry.max-attempts}")
     private Integer maxAttempts;
 
@@ -64,7 +67,7 @@ public class ProducerKafkaConfig {
     public NewTopic orderDltTopic() {
         return TopicBuilder.name(dltTopicName)
                 .partitions(partitions)
-                .replicas(replicas)
+                .replicas(dltReplicas)
                 .build();
     }
 
